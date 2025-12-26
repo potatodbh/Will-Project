@@ -1,0 +1,2401 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Ontario Will Clinic</title>
+  <meta name="description" content="The Ontario Will Clinic — educational tools to understand Ontario wills: walkthrough, decision engine, and an interactive will preview (not legal advice)." />
+  <meta name="theme-color" content="#0F172A" />
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --navy:#0F172A;
+      --navy2:#111B33;
+      --ink:#0B1220;
+      --slate:#334155;
+      --slate2:#475569;
+      --muted:#94A3B8;
+      --bg:#F8FAFC;
+      --card:#FFFFFF;
+      --border:#E2E8F0;
+      --border2:#CBD5E1;
+      --blue:#3B82F6;
+      --blue2:#2563EB;
+      --green:#22C55E;
+      --amber:#F59E0B;
+      --red:#EF4444;
+      --shadow: 0 18px 50px rgba(2,6,23,.10);
+      --shadow2: 0 10px 30px rgba(2,6,23,.08);
+      --radius: 18px;
+      --radius2: 26px;
+      --ring: 0 0 0 4px rgba(59,130,246,.20);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 15% 0%, rgba(59,130,246,.08), transparent 50%),
+                  radial-gradient(1000px 700px at 90% 10%, rgba(34,197,94,.06), transparent 55%),
+                  var(--bg);
+      color: var(--ink);
+      line-height:1.55;
+      overflow-x:hidden;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    button, input, select, textarea{ font:inherit; }
+    :focus-visible{ outline:none; box-shadow: var(--ring); border-color: rgba(59,130,246,.55)!important; }
+
+    /* Layout */
+    .container{ width:min(1200px, calc(100% - 40px)); margin:0 auto; }
+    .grid{ display:grid; gap:18px; }
+    .grid-2{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .grid-3{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .grid-4{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+
+    @media (max-width: 980px){
+      .grid-2,.grid-3,.grid-4{ grid-template-columns: 1fr; }
+    }
+
+    /* Top bar */
+    .skip{
+      position:absolute; left:-9999px; top:10px;
+      padding:10px 14px; background:#fff; border:1px solid var(--border2);
+      border-radius:12px; z-index:9999;
+    }
+    .skip:focus{ left:12px; }
+
+    header{
+      position:sticky; top:0; z-index:1000;
+      backdrop-filter: blur(10px);
+      background: rgba(248,250,252,.82);
+      border-bottom: 1px solid rgba(226,232,240,.75);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      user-select:none;
+    }
+    .logo{
+      width:40px; height:40px; border-radius:14px;
+      background: linear-gradient(135deg, var(--navy), #1E293B);
+      display:grid; place-items:center;
+      box-shadow: 0 10px 28px rgba(15,23,42,.22);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .logo svg{ opacity:.95 }
+    .brand-title{
+      display:flex; flex-direction:column; line-height:1.1;
+    }
+    .brand-title strong{ font-size:14px; letter-spacing:.2px; }
+    .brand-title span{ font-size:12px; color:var(--slate2); }
+
+    .navlinks{
+      display:flex; align-items:center; gap:8px;
+      padding:6px;
+      border-radius:999px;
+      border:1px solid rgba(226,232,240,.85);
+      background: rgba(255,255,255,.65);
+      box-shadow: 0 10px 24px rgba(2,6,23,.05);
+    }
+    .navlinks a{
+      padding:9px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color: var(--slate);
+      transition: transform .15s ease, background .15s ease, color .15s ease;
+      white-space:nowrap;
+    }
+    .navlinks a:hover{ background: rgba(15,23,42,.06); color: var(--ink); }
+    .navlinks a[aria-current="page"]{
+      background: linear-gradient(135deg, rgba(59,130,246,.18), rgba(59,130,246,.10));
+      color: var(--navy);
+      box-shadow: inset 0 0 0 1px rgba(59,130,246,.25);
+    }
+
+    .nav-cta{ display:flex; align-items:center; gap:10px; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.70);
+      color: var(--slate2);
+      font-size:12px;
+    }
+    .pill .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(34,197,94,.15);
+    }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid rgba(15,23,42,.12);
+      background: rgba(255,255,255,.9);
+      color: var(--navy);
+      box-shadow: 0 12px 26px rgba(2,6,23,.06);
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); box-shadow: 0 18px 36px rgba(2,6,23,.08); border-color: rgba(15,23,42,.18); }
+    .btn.primary{
+      border:1px solid rgba(37,99,235,.25);
+      background: linear-gradient(135deg, var(--blue2), var(--blue));
+      color:#fff;
+      box-shadow: 0 18px 42px rgba(37,99,235,.22);
+    }
+    .btn.primary:hover{ box-shadow: 0 24px 52px rgba(37,99,235,.26); }
+    .btn.ghost{
+      background: rgba(255,255,255,.0);
+      border:1px solid rgba(148,163,184,.35);
+      color: var(--slate);
+      box-shadow:none;
+    }
+    .btn.small{ padding:10px 12px; border-radius:12px; font-size:13px; }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+
+    .mobileToggle{ display:none; }
+    @media (max-width: 980px){
+      .navlinks{ display:none; }
+      .pill{ display:none; }
+      .mobileToggle{ display:inline-flex; }
+    }
+
+    /* Mobile drawer */
+    .drawer-backdrop{
+      position:fixed; inset:0;
+      background: rgba(2,6,23,.40);
+      backdrop-filter: blur(6px);
+      opacity:0; pointer-events:none;
+      transition: opacity .18s ease;
+      z-index:1500;
+    }
+    .drawer{
+      position:fixed; top:0; right:0; height:100%; width:min(380px, 92vw);
+      background: rgba(255,255,255,.92);
+      border-left: 1px solid rgba(226,232,240,.9);
+      box-shadow: -18px 0 50px rgba(2,6,23,.18);
+      transform: translateX(110%);
+      transition: transform .20s ease;
+      z-index:1600;
+      padding:18px;
+      display:flex; flex-direction:column; gap:12px;
+    }
+    .drawer h3{ margin:6px 0 6px; font-size:14px; color:var(--navy); }
+    .drawer .links{ display:flex; flex-direction:column; gap:8px; }
+    .drawer .links a{
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.85);
+      color: var(--slate);
+      transition: background .15s ease, transform .15s ease;
+    }
+    .drawer .links a:hover{ transform: translateY(-1px); background: rgba(15,23,42,.04); }
+    .drawer .meta{
+      margin-top:auto;
+      padding:12px;
+      border-radius:16px;
+      border:1px dashed rgba(148,163,184,.55);
+      color: var(--slate2);
+      font-size:12px;
+    }
+    .drawer-backdrop[data-open="true"]{ opacity:1; pointer-events:auto; }
+    .drawer[data-open="true"]{ transform: translateX(0); }
+
+    /* Sections (Routes) */
+    main{ padding: 22px 0 64px; }
+    .route{
+      display:none;
+      animation: fadeUp .25s ease both;
+    }
+    .route[data-active="true"]{ display:block; }
+
+    @keyframes fadeUp{
+      from{ opacity:0; transform: translateY(10px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    /* Hero */
+    .hero{
+      padding: 34px 0 18px;
+    }
+    .heroCard{
+      position:relative;
+      overflow:hidden;
+      border-radius: var(--radius2);
+      background:
+        radial-gradient(1000px 500px at 20% 10%, rgba(59,130,246,.18), transparent 50%),
+        radial-gradient(900px 500px at 85% 10%, rgba(34,197,94,.10), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.86));
+      border: 1px solid rgba(226,232,240,.95);
+      box-shadow: var(--shadow);
+    }
+    .heroInner{
+      padding: 34px;
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 22px;
+      align-items:center;
+    }
+    @media (max-width: 980px){
+      .heroInner{ grid-template-columns:1fr; padding: 24px; }
+    }
+    .kicker{
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:12px;
+      color: var(--slate2);
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.70);
+      width:fit-content;
+    }
+    .kicker .badge{
+      font-size:11px;
+      color:#fff;
+      background: linear-gradient(135deg, var(--navy), #1F2A44);
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow: 0 12px 24px rgba(15,23,42,.14);
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size: clamp(30px, 3vw, 44px);
+      line-height:1.10;
+      letter-spacing:-.5px;
+      color: var(--navy);
+    }
+    .lead{
+      margin: 0 0 18px;
+      color: var(--slate);
+      font-size:15px;
+      max-width: 62ch;
+    }
+    .heroActions{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .heroSide{
+      padding: 18px;
+      border-radius: var(--radius);
+      background: rgba(15,23,42,.95);
+      color:#fff;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 18px 48px rgba(15,23,42,.25);
+    }
+    .heroSide h3{ margin:0 0 10px; font-size:14px; letter-spacing:.2px; }
+    .heroSide ul{ margin:0; padding-left:18px; color: rgba(255,255,255,.85); font-size:13px; }
+    .heroSide li{ margin:8px 0; }
+    .heroSide code{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.10);
+    }
+
+    /* Cards */
+    .sectionTitle{
+      margin: 22px 0 12px;
+      display:flex; align-items:flex-end; justify-content:space-between; gap:16px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size: 18px;
+      color: var(--navy);
+      letter-spacing: -.2px;
+    }
+    .sectionTitle p{ margin:0; color:var(--slate2); font-size:13px; max-width: 72ch; }
+
+    .card{
+      background: rgba(255,255,255,.92);
+      border: 1px solid rgba(226,232,240,.95);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow2);
+      padding: 18px;
+    }
+    .card.soft{
+      background:
+        radial-gradient(700px 340px at 18% 10%, rgba(59,130,246,.10), transparent 55%),
+        rgba(255,255,255,.92);
+    }
+    .cardHeader{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+      margin-bottom: 10px;
+    }
+    .cardHeader strong{ color:var(--navy); }
+    .muted{ color: var(--slate2); }
+    .small{ font-size:13px; }
+    .tiny{ font-size:12px; color: var(--muted); }
+
+    .icon{
+      width:40px; height:40px; border-radius:14px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(248,250,252,.9);
+      display:grid; place-items:center;
+    }
+
+    .list{
+      margin:0; padding:0; list-style:none;
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .check{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.8);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .check:hover{ transform: translateY(-1px); background: rgba(255,255,255,.92); }
+    .check .tick{
+      width:22px; height:22px; border-radius:8px;
+      background: rgba(34,197,94,.12);
+      border:1px solid rgba(34,197,94,.25);
+      display:grid; place-items:center;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+    .check .tick svg{ fill: var(--green); }
+
+    /* Alert banner */
+    .notice{
+      display:flex; gap:12px; align-items:flex-start;
+      padding: 14px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(251,191,36,.35);
+      background: rgba(245,158,11,.10);
+      color: #7a4b00;
+    }
+    .notice strong{ color:#5a3700; }
+    .notice .i{
+      width:28px; height:28px; border-radius:12px;
+      border:1px solid rgba(245,158,11,.25);
+      background: rgba(245,158,11,.14);
+      display:grid; place-items:center;
+      flex:0 0 auto;
+    }
+
+    /* Stepper */
+    .stepperWrap{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items:start;
+    }
+    @media (max-width:980px){ .stepperWrap{ grid-template-columns:1fr; } }
+
+    .steps{
+      padding: 16px;
+      border-radius: var(--radius);
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.9);
+      box-shadow: var(--shadow2);
+    }
+    .stepRow{
+      display:flex; gap:12px; align-items:flex-start;
+      padding:12px;
+      border-radius: 16px;
+      border:1px solid transparent;
+      background: transparent;
+      cursor:pointer;
+      transition: background .15s ease, transform .15s ease, border-color .15s ease;
+    }
+    .stepRow:hover{
+      background: rgba(15,23,42,.03);
+      transform: translateY(-1px);
+    }
+    .stepRow[aria-selected="true"]{
+      border-color: rgba(59,130,246,.25);
+      background: radial-gradient(500px 200px at 0% 20%, rgba(59,130,246,.14), transparent 60%),
+                  rgba(255,255,255,.95);
+      box-shadow: inset 0 0 0 1px rgba(59,130,246,.12);
+    }
+    .stepDot{
+      width:30px; height:30px; border-radius: 12px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(248,250,252,.9);
+      display:grid; place-items:center;
+      flex:0 0 auto;
+      margin-top: 2px;
+    }
+    .stepRow[aria-selected="true"] .stepDot{
+      background: rgba(59,130,246,.14);
+      border-color: rgba(59,130,246,.30);
+    }
+    .stepDot span{ font-size:12px; color:var(--slate2); font-weight:600; }
+    .stepRow[aria-selected="true"] .stepDot span{ color: var(--blue2); }
+    .stepMeta strong{ display:block; color: var(--navy); font-size:14px; }
+    .stepMeta p{ margin:4px 0 0; color: var(--slate2); font-size:13px; }
+
+    .stepDetail{
+      padding: 18px;
+      border-radius: var(--radius);
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow2);
+      min-height: 260px;
+    }
+    .chipRow{ display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0 0; }
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(248,250,252,.85);
+      color: var(--slate2);
+    }
+    .chip svg{ opacity:.8; }
+
+    /* Will-I-Nator */
+    .wizard{
+      display:grid;
+      grid-template-columns: 1fr .9fr;
+      gap: 18px;
+      align-items:start;
+    }
+    @media (max-width:980px){ .wizard{ grid-template-columns:1fr; } }
+
+    .progress{
+      height: 10px; width:100%;
+      border-radius:999px;
+      background: rgba(148,163,184,.25);
+      overflow:hidden;
+      border:1px solid rgba(226,232,240,.95);
+    }
+    .progress > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--blue2), var(--blue));
+      transition: width .22s ease;
+    }
+    .qCard{
+      padding: 18px;
+      border-radius: var(--radius);
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow2);
+    }
+    .qTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+      margin-bottom: 12px;
+    }
+    .qTop .k{ font-size:12px; color:var(--muted); }
+    .qTop h3{ margin:0; font-size:16px; color:var(--navy); line-height:1.25; }
+    .qChoices{ display:grid; gap:10px; margin-top: 12px; }
+    .choice{
+      display:flex; align-items:center; gap:10px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.88);
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+    }
+    .choice:hover{ transform: translateY(-1px); background: rgba(248,250,252,.92); }
+    .choice input{ margin:0; }
+    .choice span{ color: var(--slate); font-size:13px; }
+    .qActions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px; }
+
+    .sidePanel{
+      padding: 18px;
+      border-radius: var(--radius);
+      border:1px solid rgba(226,232,240,.95);
+      background:
+        radial-gradient(900px 400px at 20% 0%, rgba(59,130,246,.10), transparent 55%),
+        rgba(255,255,255,.92);
+      box-shadow: var(--shadow2);
+      position: sticky;
+      top: 92px;
+    }
+    @media (max-width:980px){ .sidePanel{ position:static; } }
+    .sidePanel h4{ margin:0 0 10px; color:var(--navy); font-size:14px; }
+    .kv{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.85);
+      margin-bottom: 10px;
+    }
+    .kv span{ color: var(--slate2); font-size:12px; }
+    .kv strong{ color: var(--navy); font-size:12px; font-weight:700; }
+
+    .tag{
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:12px;
+      padding:8px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(248,250,252,.88);
+      color: var(--slate2);
+      margin: 6px 6px 0 0;
+    }
+    .tag b{ color: var(--navy); font-weight:700; }
+
+    .resultBox{
+      border-radius: var(--radius);
+      border: 1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow2);
+      padding: 18px;
+    }
+    .riskPill{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border-radius: 999px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(248,250,252,.92);
+      color: var(--slate);
+      font-size:13px;
+      margin-bottom: 12px;
+    }
+    .riskDot{
+      width:10px; height:10px; border-radius:50%;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(34,197,94,.14);
+    }
+    .riskDot.medium{ background: var(--amber); box-shadow: 0 0 0 5px rgba(245,158,11,.14); }
+    .riskDot.high{ background: var(--red); box-shadow: 0 0 0 5px rgba(239,68,68,.14); }
+
+    .mustList{ margin: 12px 0 0; padding:0; list-style:none; display:grid; gap:10px; }
+    .mustItem{
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.88);
+    }
+    .mustItem strong{ display:block; color:var(--navy); font-size:13px; margin-bottom: 4px; }
+    .mustItem p{ margin:0; color:var(--slate2); font-size:12px; }
+
+    /* Simulation */
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items:start;
+    }
+    @media (max-width: 980px){ .split{ grid-template-columns:1fr; } }
+
+    .formCard{
+      padding:18px;
+      border-radius: var(--radius);
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow2);
+    }
+    .fieldRow{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    @media (max-width: 680px){ .fieldRow{ grid-template-columns:1fr; } }
+
+    label{ display:block; font-size:12px; color:var(--slate2); margin: 10px 0 6px; }
+    input[type="text"], input[type="date"], select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(203,213,225,.95);
+      background: rgba(248,250,252,.9);
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+      color: var(--ink);
+    }
+    textarea{ min-height: 90px; resize: vertical; }
+    .hint{ font-size:12px; color:var(--muted); margin-top:6px; }
+
+    .benefRow{
+      display:grid;
+      grid-template-columns: 1.2fr .9fr .6fr auto;
+      gap: 10px;
+      align-items:center;
+      margin-top: 10px;
+    }
+    @media (max-width: 980px){
+      .benefRow{ grid-template-columns: 1fr; }
+    }
+    .pillBtn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.88);
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease;
+      color: var(--slate);
+    }
+    .pillBtn:hover{ transform: translateY(-1px); background: rgba(248,250,252,.95); }
+    .pillBtn.danger{ border-color: rgba(239,68,68,.25); color:#7f1d1d; background: rgba(239,68,68,.08); }
+
+    .preview{
+      padding: 18px;
+      border-radius: var(--radius);
+      border:1px solid rgba(226,232,240,.95);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.90));
+      box-shadow: var(--shadow2);
+      position: sticky;
+      top: 92px;
+      max-height: calc(100vh - 120px);
+      overflow:auto;
+    }
+    @media (max-width:980px){ .preview{ position:static; max-height:none; } }
+
+    .doc{
+      background: #fff;
+      border: 1px solid rgba(226,232,240,.95);
+      border-radius: 18px;
+      padding: 18px 18px;
+      box-shadow: inset 0 0 0 1px rgba(15,23,42,.03);
+    }
+    .doc h3{ margin:0 0 8px; font-size:14px; color: var(--navy); text-align:center; letter-spacing:.2px; }
+    .doc .meta{
+      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      font-size:12px; color: var(--slate2);
+      border-bottom:1px dashed rgba(203,213,225,.9);
+      padding-bottom: 10px; margin-bottom: 12px;
+    }
+    .doc .section{
+      margin: 12px 0;
+      font-size: 12.5px;
+      color: #0b1220;
+    }
+    .doc .section strong{ color: var(--navy); }
+    .doc ol{ margin: 8px 0 0; padding-left: 18px; }
+    .doc li{ margin: 6px 0; }
+    .doc .sig{
+      display:grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-top: 16px;
+    }
+    @media (max-width:680px){ .doc .sig{ grid-template-columns:1fr; } }
+    .sigBox{
+      border:1px dashed rgba(148,163,184,.65);
+      border-radius: 16px;
+      padding: 12px;
+      font-size:12px;
+      color: var(--slate2);
+    }
+    .sigLine{
+      margin-top: 22px;
+      border-top: 1px solid rgba(100,116,139,.8);
+      padding-top: 8px;
+      font-size: 12px;
+      color: var(--slate);
+    }
+
+    /* Vault */
+    .resourceCard a{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.88);
+      transition: transform .15s ease, background .15s ease;
+    }
+    .resourceCard a:hover{ transform: translateY(-1px); background: rgba(248,250,252,.95); }
+    .resourceCard .rTitle{ font-size:13px; color:var(--navy); font-weight:700; }
+    .resourceCard .rMeta{ font-size:12px; color:var(--slate2); margin-top:3px; }
+    .arrow{
+      width:38px; height:38px; border-radius: 14px;
+      display:grid; place-items:center;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(248,250,252,.88);
+      flex:0 0 auto;
+    }
+
+    .glossaryTop{
+      display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+    }
+    .search{
+      display:flex; gap:10px; align-items:center;
+      padding: 10px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.88);
+      min-width: min(520px, 100%);
+    }
+    .search input{
+      border:none; outline:none; background:transparent; padding:0;
+    }
+    .accordion{ display:grid; gap:10px; margin-top: 12px; }
+    details{
+      border-radius: 16px;
+      border:1px solid rgba(226,232,240,.95);
+      background: rgba(255,255,255,.90);
+      padding: 12px 12px;
+    }
+    summary{
+      cursor:pointer;
+      list-style:none;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    summary::-webkit-details-marker{ display:none; }
+    details p{ margin:10px 0 0; color: var(--slate2); font-size:12.5px; }
+
+    /* Footer */
+    footer{
+      margin-top: 26px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(226,232,240,.95);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Print-friendly */
+    @media print{
+      header, .nav, .drawer, .drawer-backdrop, .btn, .pillBtn, .hint, .notice, .navlinks, .mobileToggle{ display:none!important; }
+      body{ background:#fff; }
+      .container{ width:100%; margin:0; }
+      main{ padding:0; }
+      .preview{ position:static; max-height:none; overflow:visible; border:none; box-shadow:none; }
+      .doc{ border:1px solid #ddd; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header>
+    <div class="container">
+      <div class="nav" role="navigation" aria-label="Primary">
+        <a class="brand" href="#home" data-link>
+          <div class="logo" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M7 7h10M7 11h10M7 15h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H8l-4 1V5a2 2 0 0 1 2-2Z" stroke="white" stroke-width="2" stroke-linejoin="round" opacity=".85"/>
+            </svg>
+          </div>
+          <div class="brand-title">
+            <strong>The Ontario Will Clinic</strong>
+            <span>Education • Decisioning • Draft Preview</span>
+          </div>
+        </a>
+
+        <nav class="navlinks" aria-label="Pages">
+          <a href="#home" data-link>Home</a>
+          <a href="#walkthrough" data-link>Walkthrough</a>
+          <a href="#willinator" data-link>Will-I-Nator</a>
+          <a href="#simulation" data-link>Simulation</a>
+          <a href="#vault" data-link>Legal Vault</a>
+        </nav>
+
+        <div class="nav-cta">
+          <div class="pill" title="Privacy-friendly">
+            <span class="dot" aria-hidden="true"></span>
+            <span>Your answers stay in your browser</span>
+          </div>
+          <button class="btn small ghost mobileToggle" id="openDrawer" aria-haspopup="dialog" aria-controls="drawer" aria-label="Open menu">
+            Menu
+          </button>
+          <button class="btn small primary" data-route-btn="#willinator" aria-label="Start the Will-I-Nator">
+            Start Now
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 18l6-6-6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Navigation menu" data-open="false">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <h3 style="margin:0;">Navigate</h3>
+      <button class="btn small" id="closeDrawer" aria-label="Close menu">Close</button>
+    </div>
+    <div class="links" role="navigation" aria-label="Mobile pages">
+      <a href="#home" data-link>Home</a>
+      <a href="#walkthrough" data-link>Walkthrough</a>
+      <a href="#willinator" data-link>Will-I-Nator</a>
+      <a href="#simulation" data-link>Simulation</a>
+      <a href="#vault" data-link>Legal Vault</a>
+    </div>
+    <div class="meta">
+      <strong style="color:var(--navy);">Disclaimer</strong><br>
+      This site is educational and not legal advice. For complex situations (blended families, dependants, businesses, foreign property), consult an Ontario lawyer.
+    </div>
+  </aside>
+
+  <main id="main" class="container" tabindex="-1">
+    <!-- ROUTE: HOME -->
+    <section class="route" id="route-home" data-route="home" data-active="true" aria-labelledby="home-title">
+      <div class="hero">
+        <div class="heroCard">
+          <div class="heroInner">
+            <div>
+              <div class="kicker">
+                <span class="badge">Ontario</span>
+                <span>High-clarity guidance for wills • student-friendly • professional UX</span>
+              </div>
+              <h1 id="home-title">Secure your future with an Ontario-ready will plan.</h1>
+              <p class="lead">
+                Learn the legal stages, run a risk check, and build a draft preview—so you walk into a lawyer meeting (or a DIY attempt) with clarity.
+                No accounts. No tracking. Just clean, high-signal tools.
+              </p>
+              <div class="heroActions">
+                <button class="btn primary" data-route-btn="#walkthrough">
+                  Learn the process
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M9 18l6-6-6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <button class="btn" data-route-btn="#willinator">
+                  Run Will-I-Nator
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 6v12M6 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </button>
+                <button class="btn ghost" data-route-btn="#simulation">
+                  Draft preview simulation
+                </button>
+              </div>
+              <div style="margin-top:14px" class="tiny">
+                Built for GitHub Pages: single-file SPA, hash routing, zero backend.
+              </div>
+            </div>
+
+            <aside class="heroSide" aria-label="Quick facts">
+              <h3>What makes a will “Ontario-safe”?</h3>
+              <ul>
+                <li>Clear <code>executor</code> appointment + backups</li>
+                <li>Two witnesses (in-person, same time) for formal wills</li>
+                <li>No beneficiary (or their spouse) as witness (reduces risk)</li>
+                <li>Plan for minors: <code>guardian</code> + <code>trustee</code> rules</li>
+                <li>Original storage + discovery plan for your executor</li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <div class="sectionTitle">
+        <div>
+          <h2>Why you need a will</h2>
+          <p>Without one, Ontario’s default rules may send money, responsibilities, and delays in directions you didn’t choose.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card soft">
+          <div class="cardHeader">
+            <div>
+              <strong>Control</strong>
+              <div class="tiny">Decide who gets what, when, and how.</div>
+            </div>
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="small muted">
+            A will lets you choose beneficiaries, set conditions, and name backups so your estate doesn’t default to a one-size rule set.
+          </div>
+        </div>
+
+        <div class="card soft">
+          <div class="cardHeader">
+            <div>
+              <strong>Speed</strong>
+              <div class="tiny">Reduce chaos for the people you leave behind.</div>
+            </div>
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M21 12a9 9 0 1 1-9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M21 3v9h-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="small muted">
+            Clear instructions mean fewer disputes, fewer delays, and fewer “what did they want?” moments—especially for personal items.
+          </div>
+        </div>
+
+        <div class="card soft">
+          <div class="cardHeader">
+            <div>
+              <strong>Protection</strong>
+              <div class="tiny">Plan for minors, dependants, and vulnerable beneficiaries.</div>
+            </div>
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 22s8-4 8-10V6l-8-4-8 4v6c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="small muted">
+            If you have kids, dependants, or blended family dynamics, the right clauses prevent unintended outcomes and reduce contest risk.
+          </div>
+        </div>
+      </div>
+
+      <div class="sectionTitle" style="margin-top:18px;">
+        <div>
+          <h2>Ontario legal checklist</h2>
+          <p>Use this as a “pre-flight” check before you draft, sign, or store anything.</p>
+        </div>
+        <button class="btn small" id="printChecklist" type="button" title="Print this page section">Print</button>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <ul class="list" id="checklistBlock">
+            <li class="check">
+              <div class="tick" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+              </div>
+              <div>
+                <strong class="small">Capacity</strong>
+                <div class="tiny">You must be capable: understand what a will is, your property, and the people who may have a claim.</div>
+              </div>
+            </li>
+
+            <li class="check">
+              <div class="tick" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+              </div>
+              <div>
+                <strong class="small">Execution</strong>
+                <div class="tiny">For a formal will: sign in front of two witnesses present at the same time.</div>
+              </div>
+            </li>
+
+            <li class="check">
+              <div class="tick" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+              </div>
+              <div>
+                <strong class="small">Witness selection</strong>
+                <div class="tiny">Avoid beneficiaries (and their spouse/partner) as witnesses to reduce challenges and gift-voiding risk.</div>
+              </div>
+            </li>
+
+            <li class="check">
+              <div class="tick" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+              </div>
+              <div>
+                <strong class="small">Executor readiness</strong>
+                <div class="tiny">Choose someone organized, trusted, and available. Always name an alternate executor.</div>
+              </div>
+            </li>
+
+            <li class="check">
+              <div class="tick" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+              </div>
+              <div>
+                <strong class="small">Storage + discovery</strong>
+                <div class="tiny">Store the original safely and ensure your executor can find it quickly.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="notice" role="note" aria-label="Important note">
+            <div class="i" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M12 9v4m0 4h.01" stroke="#7a4b00" stroke-width="2" stroke-linecap="round"/>
+                <path d="M10.3 4.6 3 20h18L13.7 4.6a2 2 0 0 0-3.4 0Z" stroke="#7a4b00" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="small">
+              <strong>Not legal advice.</strong> This site is an educational clinic. If you have dependants, a blended family, a business, significant assets, or foreign property, a lawyer review is strongly recommended.
+            </div>
+          </div>
+
+          <div style="margin-top:12px" class="small muted">
+            Want an official “next steps” resource? Jump to <a href="#vault" data-link style="color:var(--blue2); text-decoration:underline;">Legal Vault</a> for Ontario forms and public legal education PDFs.
+          </div>
+
+          <div style="margin-top:16px" class="grid grid-2">
+            <div class="card" style="padding:14px; box-shadow:none;">
+              <strong class="small">Best for</strong>
+              <div class="tiny">Simple estates, clear beneficiaries, low dispute risk.</div>
+            </div>
+            <div class="card" style="padding:14px; box-shadow:none;">
+              <strong class="small">Get help when</strong>
+              <div class="tiny">Kids/minors, separation, debts, business, or complex family dynamics.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        © <span id="year"></span> The Ontario Will Clinic • Built for GitHub Pages • Educational use only.
+      </footer>
+    </section>
+
+    <!-- ROUTE: WALKTHROUGH -->
+    <section class="route" id="route-walkthrough" data-route="walkthrough" aria-labelledby="walkthrough-title">
+      <div class="sectionTitle">
+        <div>
+          <h2 id="walkthrough-title">The Walkthrough</h2>
+          <p>Five Ontario-relevant stages, presented as a clean stepper with practical “watch-outs”.</p>
+        </div>
+        <button class="btn small" data-route-btn="#willinator">Run Will-I-Nator</button>
+      </div>
+
+      <div class="stepperWrap">
+        <div class="steps" role="tablist" aria-label="Will creation stages">
+          <div class="stepRow" role="tab" tabindex="0" aria-selected="true" data-step="0">
+            <div class="stepDot"><span>1</span></div>
+            <div class="stepMeta">
+              <strong>Capacity</strong>
+              <p>Are you legally and mentally able to make a will?</p>
+            </div>
+          </div>
+
+          <div class="stepRow" role="tab" tabindex="-1" aria-selected="false" data-step="1">
+            <div class="stepDot"><span>2</span></div>
+            <div class="stepMeta">
+              <strong>Drafting</strong>
+              <p>Write clear instructions and structure the estate plan.</p>
+            </div>
+          </div>
+
+          <div class="stepRow" role="tab" tabindex="-1" aria-selected="false" data-step="2">
+            <div class="stepDot"><span>3</span></div>
+            <div class="stepMeta">
+              <strong>Execution</strong>
+              <p>Sign correctly (and avoid DIY invalidation traps).</p>
+            </div>
+          </div>
+
+          <div class="stepRow" role="tab" tabindex="-1" aria-selected="false" data-step="3">
+            <div class="stepDot"><span>4</span></div>
+            <div class="stepMeta">
+              <strong>Witnessing</strong>
+              <p>Pick the right witnesses and document properly.</p>
+            </div>
+          </div>
+
+          <div class="stepRow" role="tab" tabindex="-1" aria-selected="false" data-step="4">
+            <div class="stepDot"><span>5</span></div>
+            <div class="stepMeta">
+              <strong>Storing</strong>
+              <p>Protect the original and make it discoverable.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="stepDetail" id="stepDetail" aria-live="polite"></div>
+      </div>
+
+      <div class="sectionTitle" style="margin-top:18px;">
+        <div>
+          <h2>Common pitfalls</h2>
+          <p>These are “quiet failures” that cause disputes later—even when intentions were good.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <strong class="small">One witness (or witnesses not present together)</strong>
+          <div class="tiny">A classic DIY issue. For formal wills, witnesses should be present at the same time and sign properly.</div>
+        </div>
+        <div class="card">
+          <strong class="small">Beneficiary as witness</strong>
+          <div class="tiny">It can create a dispute risk (and can void that beneficiary’s gift in many situations). Choose neutral witnesses.</div>
+        </div>
+        <div class="card">
+          <strong class="small">No plan for minors/dependants</strong>
+          <div class="tiny">Guardianship and trustee mechanics matter. A “simple will” can become complicated fast with kids or dependants.</div>
+        </div>
+      </div>
+
+      <footer>
+        Tip: Use <a href="#vault" data-link style="color:var(--blue2); text-decoration:underline;">Legal Vault</a> to download common Ontario estates forms and public legal education PDFs.
+      </footer>
+    </section>
+
+    <!-- ROUTE: WILL-I-NATOR -->
+    <section class="route" id="route-willator" data-route="willinator" aria-labelledby="willinator-title">
+      <div class="sectionTitle">
+        <div>
+          <h2 id="willinator-title">The Will-I-Nator</h2>
+          <p>Answer a few questions. Get a risk profile and a list of clauses you <em>must</em> consider for an Ontario will.</p>
+        </div>
+        <button class="btn small ghost" id="resetWillinator">Reset</button>
+      </div>
+
+      <div class="wizard">
+        <div class="qCard" id="qArea">
+          <div class="progress" aria-label="Progress">
+            <div id="qProgress"></div>
+          </div>
+
+          <div class="qTop" style="margin-top:14px;">
+            <div>
+              <div class="k" id="qKicker">Question 1 of 10</div>
+              <h3 id="qTitle">Loading…</h3>
+            </div>
+            <div class="icon" aria-hidden="true" title="Decision engine">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M4 4h16v5H4V4Zm0 11h16v5H4v-5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M8 9v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="qChoices" id="qChoices"></div>
+
+          <div class="qActions">
+            <button class="btn small" id="qBack" type="button">Back</button>
+            <button class="btn small primary" id="qNext" type="button">Next</button>
+            <button class="btn small ghost" id="qSkip" type="button" title="Skip if unsure">Skip</button>
+          </div>
+
+          <div class="tiny" style="margin-top:10px;">
+            Educational guidance only. For legal advice, see Legal Vault → “Where to Get Help”.
+          </div>
+        </div>
+
+        <aside class="sidePanel" aria-label="Live profile">
+          <h4>Live profile</h4>
+          <div class="kv"><span>Complexity score</span><strong id="liveScore">0</strong></div>
+          <div class="kv"><span>Estimated risk tier</span><strong id="liveTier">Low</strong></div>
+          <div class="tiny" style="margin-bottom:10px;">
+            Score is based on complexity (kids, dependants, business, foreign assets, conflict risk).
+          </div>
+          <div id="liveTags"></div>
+
+          <div style="margin-top:14px" class="card" aria-label="What you get">
+            <strong class="small">At the end, you’ll get:</strong>
+            <div class="tiny" style="margin-top:6px;">
+              A “Must Include” clause list + a recommended next step (DIY vs lawyer review).
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div id="resultArea" style="margin-top:18px; display:none;"></div>
+
+      <footer>
+        Pro move: run Will-I-Nator first, then do the <a href="#simulation" data-link style="color:var(--blue2); text-decoration:underline;">Simulation</a> to see how clauses appear in a document layout.
+      </footer>
+    </section>
+
+    <!-- ROUTE: SIMULATION -->
+    <section class="route" id="route-simulation" data-route="simulation" aria-labelledby="simulation-title">
+      <div class="sectionTitle">
+        <div>
+          <h2 id="simulation-title">The Simulation</h2>
+          <p>Type executor + beneficiaries and see a real-time Ontario-style will preview. Print-friendly. No data leaves your device.</p>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn small" id="printWill" type="button">Print / Save as PDF</button>
+          <button class="btn small ghost" id="resetWillForm" type="button">Reset</button>
+        </div>
+      </div>
+
+      <div class="split">
+        <div class="formCard" aria-label="Will form">
+          <div class="notice" role="note">
+            <div class="i" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M12 9v4m0 4h.01" stroke="#7a4b00" stroke-width="2" stroke-linecap="round"/>
+                <path d="M10.3 4.6 3 20h18L13.7 4.6a2 2 0 0 0-3.4 0Z" stroke="#7a4b00" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="small">
+              <strong>Important:</strong> This preview is a learning tool, not a legally validated will. Execution rules and legal review still matter.
+            </div>
+          </div>
+
+          <div class="fieldRow">
+            <div>
+              <label for="testatorName">Your full legal name</label>
+              <input id="testatorName" type="text" placeholder="e.g., Jordan Alex Chen" autocomplete="name" />
+            </div>
+            <div>
+              <label for="testatorCity">City / Town (Ontario)</label>
+              <input id="testatorCity" type="text" placeholder="e.g., Toronto" autocomplete="address-level2" />
+            </div>
+          </div>
+
+          <div class="fieldRow">
+            <div>
+              <label for="testatorAddress">Street address</label>
+              <input id="testatorAddress" type="text" placeholder="e.g., 123 King St W" autocomplete="street-address" />
+            </div>
+            <div>
+              <label for="testatorDOB">Date of birth (optional)</label>
+              <input id="testatorDOB" type="date" />
+            </div>
+          </div>
+
+          <div class="fieldRow">
+            <div>
+              <label for="executorName">Executor (Estate Trustee)</label>
+              <input id="executorName" type="text" placeholder="e.g., Taylor Morgan" />
+            </div>
+            <div>
+              <label for="executorAlt">Alternate executor</label>
+              <input id="executorAlt" type="text" placeholder="e.g., Casey Patel" />
+            </div>
+          </div>
+
+          <label for="minorChildren">Do you have minor children?</label>
+          <select id="minorChildren">
+            <option value="unknown">Prefer not to say / unsure</option>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+
+          <div id="guardianBlock" style="display:none;">
+            <div class="fieldRow">
+              <div>
+                <label for="guardianName">Guardian (if minors)</label>
+                <input id="guardianName" type="text" placeholder="e.g., Avery Singh" />
+              </div>
+              <div>
+                <label for="trusteeName">Trustee for minors' gifts</label>
+                <input id="trusteeName" type="text" placeholder="e.g., Morgan Lee" />
+              </div>
+            </div>
+            <div class="hint">Ontario family situations can be complex—consider legal advice for guardianship/trustee clauses.</div>
+          </div>
+
+          <label>Beneficiaries (residue)</label>
+          <div class="hint">Add one or more. You can use shares (%) or “equal”. If you don’t add anyone, the preview will show placeholders.</div>
+          <div id="benefList"></div>
+          <button class="btn small" id="addBenef" type="button" style="margin-top:10px;">Add beneficiary</button>
+
+          <label for="specificGifts">Specific gifts (optional)</label>
+          <textarea id="specificGifts" placeholder="e.g., My watch collection to … / My guitar to …"></textarea>
+
+          <label for="notes">Extra instructions (optional)</label>
+          <textarea id="notes" placeholder="e.g., Funeral wishes, charitable gifts, digital assets note…"></textarea>
+        </div>
+
+        <div class="preview" aria-label="Will preview">
+          <div class="doc" id="willDoc"></div>
+          <div class="tiny" style="margin-top:10px;">
+            Tip: printing will omit navigation automatically. Use “Save as PDF” in your browser print dialog.
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        For official Ontario resources and help options, visit <a href="#vault" data-link style="color:var(--blue2); text-decoration:underline;">Legal Vault</a>.
+      </footer>
+    </section>
+
+    <!-- ROUTE: VAULT -->
+    <section class="route" id="route-vault" data-route="vault" aria-labelledby="vault-title">
+      <div class="sectionTitle">
+        <div>
+          <h2 id="vault-title">The Legal Vault</h2>
+          <p>Real Ontario forms + plain-language resources + a fast glossary. Links open in a new tab.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="cardHeader">
+            <div>
+              <strong>Ontario forms (PDF)</strong>
+              <div class="tiny">Common estates forms and helpful procedural PDFs.</div>
+            </div>
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="grid" style="gap:10px;">
+            <div class="resourceCard">
+              <a href="https://ontariocourtforms.on.ca/static/media/uploads/courtforms/civil/74_08/rcp-74-8-e.pdf" target="_blank" rel="noreferrer">
+                <div>
+                  <div class="rTitle">Form 74.8 — Affidavit of Execution of Will or Codicil (PDF)</div>
+                  <div class="rMeta">Ontario Superior Court of Justice (Court Forms)</div>
+                </div>
+                <div class="arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+
+            <div class="resourceCard">
+              <a href="https://ontariocourtforms.on.ca/static/media/uploads/courtforms/civil/74_10/rcp-74-10-e.pdf" target="_blank" rel="noreferrer">
+                <div>
+                  <div class="rTitle">Form 74.10 — Affidavit of Condition of Will or Codicil (PDF)</div>
+                  <div class="rMeta">Ontario Superior Court of Justice (Court Forms)</div>
+                </div>
+                <div class="arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+
+            <div class="resourceCard">
+              <a href="https://ontariocourtforms.on.ca/forms/civil/74.01/RCP_E_74.01_1105_ODA.pdf" target="_blank" rel="noreferrer">
+                <div>
+                  <div class="rTitle">Form 74.1 — Notice to Estate Registrar of Deposit of Will/Codicil (PDF)</div>
+                  <div class="rMeta">Deposit/registration related form (Court Forms)</div>
+                </div>
+                <div class="arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+
+            <div class="resourceCard">
+              <a href="https://ontariocourtforms.on.ca/static/media/uploads/courtforms/civil/filing-service-timelines-rcp-74a-74-1a-74j-en.pdf" target="_blank" rel="noreferrer">
+                <div>
+                  <div class="rTitle">Filing & Service Timelines (RCP 74A / 74.1A / 74J) (PDF)</div>
+                  <div class="rMeta">Helpful reference for probate-related processes</div>
+                </div>
+                <div class="arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="cardHeader">
+            <div>
+              <strong>Plain-language PDFs</strong>
+              <div class="tiny">High quality public legal education resources.</div>
+            </div>
+            <div class="icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M4 19a2 2 0 0 0 2 2h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6 17V5a2 2 0 0 1 2-2h12v14H8a2 2 0 0 0-2 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="grid" style="gap:10px;">
+            <div class="resourceCard">
+              <a href="https://stepstojustice.ca/wp-content/uploads/Tip-sheet-Preparing-your-will-EN.pdf" target="_blank" rel="noreferrer">
+                <div>
+                  <div class="rTitle">“Preparing your will” tip sheet (PDF)</div>
+                  <div class="rMeta">Steps to Justice / CLEO</div>
+                </div>
+                <div class="arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+
+            <div class="resourceCard">
+              <a href="https://cleoconnect.ca/wp-content/uploads/2021/04/LIFE-SPIN-Will-and-Power-of-Attorney-Kit.pdf" target="_blank" rel="noreferrer">
+                <div>
+                  <div class="rTitle">Will & Power of Attorney Fundamentals (PDF)</div>
+                  <div class="rMeta">CLEO Connect resource kit</div>
+                </div>
+                <div class="arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div style="margin-top:14px" class="card" aria-label="Where to get help" id="helpDirectory">
+            <strong class="small">Where to get help (Ontario)</strong>
+            <ul class="list" style="margin-top:10px;">
+              <li class="check">
+                <div class="tick" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+                </div>
+                <div>
+                  <strong class="small">Law Society Referral Service</strong>
+                  <div class="tiny">Get a lawyer/paralegal referral for a free up-to-30-minute consultation.</div>
+                  <div class="tiny" style="margin-top:6px;">
+                    <a href="https://lso.ca/public-resources/finding-a-lawyer-or-paralegal/law-society-referral-service" target="_blank" rel="noreferrer" style="color:var(--blue2); text-decoration:underline;">Open LSRS</a>
+                  </div>
+                </div>
+              </li>
+
+              <li class="check">
+                <div class="tick" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+                </div>
+                <div>
+                  <strong class="small">Ontario overview pages</strong>
+                  <div class="tiny">Estate planning basics and probate pathways.</div>
+                  <div class="tiny" style="margin-top:6px;">
+                    <a href="https://www.ontario.ca/page/estate-planning-and-wills" target="_blank" rel="noreferrer" style="color:var(--blue2); text-decoration:underline;">Estate planning & wills</a>
+                    <span class="tiny"> • </span>
+                    <a href="https://www.ontario.ca/page/apply-probate-estate" target="_blank" rel="noreferrer" style="color:var(--blue2); text-decoration:underline;">Apply for probate</a>
+                  </div>
+                </div>
+              </li>
+
+              <li class="check">
+                <div class="tick" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+                </div>
+                <div>
+                  <strong class="small">Guided Pathways</strong>
+                  <div class="tiny">Interactive interviews that help draft documents and next steps (public legal education tool).</div>
+                  <div class="tiny" style="margin-top:6px;">
+                    <a href="https://stepstojustice.ca/guided-pathways/wills-and-powers-of-attorney-about/" target="_blank" rel="noreferrer" style="color:var(--blue2); text-decoration:underline;">Open Guided Pathways</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="sectionTitle" style="margin-top:18px;">
+        <div>
+          <h2>Glossary</h2>
+          <p>Fast definitions. Searchable. Built for students and first-time will-makers.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="glossaryTop">
+          <div class="search" role="search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <input id="glossarySearch" type="text" placeholder="Search terms (executor, residue, codicil…)" aria-label="Search glossary" />
+          </div>
+          <div class="tiny">Tip: open items with Enter, close with Escape.</div>
+        </div>
+
+        <div class="accordion" id="glossaryList"></div>
+      </div>
+
+      <footer>
+        Educational use only. If a situation feels “high stakes”, treat that as a lawyer-review signal.
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    /***********************
+     * Tiny helpers
+     ***********************/
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const escapeHTML = (str="") => String(str)
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+    const clamp = (n,min,max) => Math.max(min, Math.min(max,n));
+
+    /***********************
+     * SPA Routing (hash)
+     ***********************/
+    const routes = ["home","walkthrough","willinator","simulation","vault"];
+    function getRouteFromHash(){
+      const h = (location.hash || "#home").replace("#","");
+      return routes.includes(h) ? h : "home";
+    }
+    function setActiveRoute(route){
+      $$(".route").forEach(s => s.dataset.active = (s.dataset.route === route) ? "true" : "false");
+      // nav highlight
+      $$("[data-link]").forEach(a => {
+        const href = (a.getAttribute("href") || "").replace("#","");
+        if (routes.includes(href)) a.setAttribute("aria-current", href === route ? "page" : "false");
+      });
+      // focus main for accessibility on route change
+      $("#main").focus({preventScroll:true});
+      // close mobile drawer if open
+      closeDrawer();
+    }
+    window.addEventListener("hashchange", () => setActiveRoute(getRouteFromHash()));
+
+    // Route buttons
+    $$("[data-route-btn]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const to = btn.getAttribute("data-route-btn");
+        if (to) location.hash = to;
+      });
+    });
+
+    /***********************
+     * Mobile Drawer
+     ***********************/
+    const drawer = $("#drawer");
+    const drawerBackdrop = $("#drawerBackdrop");
+    const openDrawerBtn = $("#openDrawer");
+    const closeDrawerBtn = $("#closeDrawer");
+
+    function openDrawer(){
+      drawer.dataset.open = "true";
+      drawerBackdrop.dataset.open = "true";
+      drawerBackdrop.setAttribute("aria-hidden","false");
+      // trap focus lightly: focus first link
+      const firstLink = drawer.querySelector("a");
+      if (firstLink) firstLink.focus();
+    }
+    function closeDrawer(){
+      drawer.dataset.open = "false";
+      drawerBackdrop.dataset.open = "false";
+      drawerBackdrop.setAttribute("aria-hidden","true");
+    }
+    openDrawerBtn?.addEventListener("click", openDrawer);
+    closeDrawerBtn?.addEventListener("click", closeDrawer);
+    drawerBackdrop?.addEventListener("click", closeDrawer);
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeDrawer();
+    });
+
+    /***********************
+     * Walkthrough Stepper
+     ***********************/
+    const stepContent = [
+      {
+        title: "Capacity",
+        body: `
+          <div class="small muted">
+            Capacity is about whether you can make a will knowingly and voluntarily. A practical way to think about it:
+            can you explain (1) what a will does, (2) what you own, and (3) who might reasonably expect to benefit?
+          </div>
+          <div class="chipRow">
+            <span class="chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V6l-8-4-8 4v6c0 6 8 10 8 10Z" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              Watch-out: pressure / undue influence
+            </span>
+            <span class="chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 2v6m0 14v-6M2 12h6m14 0h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Document intent clearly
+            </span>
+          </div>
+          <div class="small muted" style="margin-top:12px;">
+            If someone expects to challenge your will, consider a lawyer-drafted will and solid execution practice.
+          </div>
+        `
+      },
+      {
+        title: "Drafting",
+        body: `
+          <div class="small muted">
+            Drafting is your plan turned into clear structure: executor appointment, debts/taxes, gifts, residue,
+            alternates, and special clauses (minors, trusts, digital assets, pets).
+          </div>
+          <div class="chipRow">
+            <span class="chip"><b>Must</b> Name executor + alternate</span>
+            <span class="chip"><b>Must</b> Residue clause</span>
+            <span class="chip"><b>Optional</b> Specific gifts list</span>
+            <span class="chip"><b>Optional</b> Digital assets authority</span>
+          </div>
+          <div class="small muted" style="margin-top:12px;">
+            “Specific gifts” cover named items; “residue” covers everything left over. Most disputes are “residue disputes.”
+          </div>
+        `
+      },
+      {
+        title: "Execution",
+        body: `
+          <div class="small muted">
+            Execution is the signing moment. Most DIY failures happen here. For a formal will, sign properly, in order,
+            with two witnesses present at the same time.
+          </div>
+          <div class="chipRow">
+            <span class="chip">Two witnesses, same time</span>
+            <span class="chip">Sign & initial pages (best practice)</span>
+            <span class="chip">Avoid last-minute edits without counsel</span>
+          </div>
+          <div class="small muted" style="margin-top:12px;">
+            If your will is handwritten (holograph), rules differ—don’t mix formats without understanding the legal impact.
+          </div>
+        `
+      },
+      {
+        title: "Witnessing",
+        body: `
+          <div class="small muted">
+            Witnesses should be adults and ideally neutral (not beneficiaries and not married to/partnered with beneficiaries).
+            Witnessing is about proof later: who saw what, and whether the process was clean.
+          </div>
+          <div class="chipRow">
+            <span class="chip">Neutral witnesses</span>
+            <span class="chip">Keep names/contact details</span>
+            <span class="chip">Execution affidavit (if needed)</span>
+          </div>
+          <div class="small muted" style="margin-top:12px;">
+            The Legal Vault includes Ontario forms used later if probate is required.
+          </div>
+        `
+      },
+      {
+        title: "Storing",
+        body: `
+          <div class="small muted">
+            A will that can’t be found can act like “no will.” Store the original safely and make sure your executor can access it.
+            Consider documenting the storage location and keeping copies (marked “copy”) elsewhere.
+          </div>
+          <div class="chipRow">
+            <span class="chip">Original in safe storage</span>
+            <span class="chip">Tell executor where it is</span>
+            <span class="chip">Update after life changes</span>
+          </div>
+          <div class="small muted" style="margin-top:12px;">
+            If your life changes (kids, separation, major assets), treat that as a trigger to review your plan.
+          </div>
+        `
+      }
+    ];
+
+    function renderStepDetail(idx){
+      const s = stepContent[idx];
+      $("#stepDetail").innerHTML = `
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+          <div>
+            <div class="tiny">Stage ${idx+1} of 5</div>
+            <h3 style="margin:6px 0 0; font-size:16px; color:var(--navy);">${escapeHTML(s.title)}</h3>
+          </div>
+          <button class="btn small" type="button" data-route-btn="#simulation">Try the Simulation</button>
+        </div>
+        <div style="margin-top:12px;">${s.body}</div>
+      `;
+      // attach route button inside
+      $$("#stepDetail [data-route-btn]").forEach(b=>{
+        b.addEventListener("click", () => location.hash = b.getAttribute("data-route-btn"));
+      });
+    }
+
+    const stepRows = $$(".stepRow");
+    stepRows.forEach(row=>{
+      const select = () => {
+        stepRows.forEach(r=>{
+          const active = r === row;
+          r.setAttribute("aria-selected", active ? "true" : "false");
+          r.tabIndex = active ? 0 : -1;
+        });
+        renderStepDetail(Number(row.dataset.step));
+      };
+      row.addEventListener("click", select);
+      row.addEventListener("keydown", (e)=>{
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(); }
+        const i = Number(row.dataset.step);
+        if (e.key === "ArrowDown") { e.preventDefault(); stepRows[clamp(i+1,0,4)].focus(); }
+        if (e.key === "ArrowUp") { e.preventDefault(); stepRows[clamp(i-1,0,4)].focus(); }
+      });
+    });
+
+    /***********************
+     * Will-I-Nator (Wizard)
+     ***********************/
+    const questions = [
+      { id:"marital", type:"single", title:"What’s your relationship status (for estate planning)?",
+        options:[
+          ["single","Single"],
+          ["married","Married"],
+          ["commonlaw","Common-law partner"],
+          ["separated","Separated / in the middle of a breakup"],
+          ["divorced","Divorced"],
+          ["prefer","Prefer not to say"]
+        ],
+        tags: (v)=> v && ["Marital: "+v]
+      },
+      { id:"kids", type:"single", title:"Do you have children (including minors)?",
+        options:[["none","No"],["adult","Yes — adults only"],["minor","Yes — at least one minor"],["prefer","Prefer not to say"]],
+        tags:(v)=> v && (v==="minor" ? ["Minor children"] : v==="adult" ? ["Adult children"] : [])
+      },
+      { id:"dependants", type:"single", title:"Do you have anyone who depends on you financially? (not just kids)",
+        options:[["no","No"],["yes","Yes"],["unsure","Unsure"]],
+        tags:(v)=> v==="yes" ? ["Financial dependants"] : []
+      },
+      { id:"assets", type:"multi", title:"Which assets do you have? (select all that apply)",
+        options:[
+          ["realestate","Ontario real estate"],
+          ["investments","Investments / registered accounts"],
+          ["business","Business ownership / shares"],
+          ["foreign","Property/assets outside Canada"],
+          ["none","None / prefer not to say"]
+        ],
+        tags:(v)=> (v||[]).map(x=> {
+          if (x==="realestate") return "Real estate";
+          if (x==="investments") return "Investments";
+          if (x==="business") return "Business";
+          if (x==="foreign") return "Foreign assets";
+          return null;
+        }).filter(Boolean)
+      },
+      { id:"blended", type:"single", title:"Is this a blended family situation? (step-kids, prior relationship children, complex beneficiaries)",
+        options:[["no","No"],["yes","Yes"],["unsure","Unsure"]],
+        tags:(v)=> v==="yes" ? ["Blended family"] : []
+      },
+      { id:"specific", type:"single", title:"Do you want to leave specific items to specific people? (jewelry, collections, family heirlooms)",
+        options:[["no","No"],["yes","Yes"],["unsure","Unsure"]],
+        tags:(v)=> v==="yes" ? ["Specific gifts"] : []
+      },
+      { id:"pets", type:"single", title:"Do you have pets you want to plan for?",
+        options:[["no","No"],["yes","Yes"],["unsure","Unsure"]],
+        tags:(v)=> v==="yes" ? ["Pets"] : []
+      },
+      { id:"digital", type:"single", title:"Do you have digital assets you’d want handled? (crypto, monetized accounts, important online accounts)",
+        options:[["no","No"],["yes","Yes"],["unsure","Unsure"]],
+        tags:(v)=> v==="yes" ? ["Digital assets"] : []
+      },
+      { id:"conflict", type:"single", title:"Do you expect any conflict or challenge risk? (family tension, unequal gifts, pressure risk)",
+        options:[["no","No"],["maybe","Maybe"],["yes","Yes"],["prefer","Prefer not to say"]],
+        tags:(v)=> v==="yes" ? ["Dispute risk"] : v==="maybe" ? ["Possible dispute risk"] : []
+      },
+      { id:"charity", type:"single", title:"Do you plan to leave anything to charity?",
+        options:[["no","No"],["yes","Yes"],["unsure","Unsure"]],
+        tags:(v)=> v==="yes" ? ["Charitable gifts"] : []
+      }
+    ];
+
+    const wizardState = {
+      idx: 0,
+      answers: {}, // id -> value
+      liveScore: 0,
+      liveTier: "Low"
+    };
+
+    function scoreFromAnswers(a){
+      let s = 0;
+
+      // minors and dependants add complexity
+      if (a.kids === "minor") s += 28;
+      if (a.dependants === "yes") s += 16;
+
+      // blended family & conflict
+      if (a.blended === "yes") s += 22;
+      if (a.conflict === "maybe") s += 10;
+      if (a.conflict === "yes") s += 22;
+
+      // assets
+      const assets = Array.isArray(a.assets) ? a.assets : [];
+      if (assets.includes("realestate")) s += 10;
+      if (assets.includes("investments")) s += 8;
+      if (assets.includes("business")) s += 22;
+      if (assets.includes("foreign")) s += 26;
+
+      // extras
+      if (a.specific === "yes") s += 8;
+      if (a.pets === "yes") s += 6;
+      if (a.digital === "yes") s += 10;
+      if (a.charity === "yes") s += 6;
+
+      // separation can be complex
+      if (a.marital === "separated") s += 18;
+
+      return clamp(s, 0, 100);
+    }
+
+    function tierFromScore(score){
+      if (score >= 55) return "High";
+      if (score >= 28) return "Medium";
+      return "Low";
+    }
+
+    function mustIncludeClauses(a){
+      const clauses = [];
+      const add = (title, why) => clauses.push({title, why});
+
+      // Always
+      add("Revocation clause", "Avoids confusion with older wills/codicils.");
+      add("Appointment of Executor (Estate Trustee) + Alternate", "Ensures someone has authority to manage the estate.");
+      add("Debt, tax, and expense direction", "Clarifies how final expenses are handled.");
+      add("Residuary clause (the “everything else” clause)", "Prevents partial intestacy (assets not covered by gifts).");
+      add("Contingent beneficiaries (backups)", "If a beneficiary predeceases you, your plan should still work.");
+      add("Execution & attestation block (signing/witnessing)", "Helps prove the will was properly signed.");
+
+      // Relationship
+      if (a.marital === "married" || a.marital === "commonlaw"){
+        add("Spousal status clause (and separation trigger review)", "Spousal relationships can affect expectations and claims—review after major changes.");
+      }
+      if (a.marital === "separated"){
+        add("Separation-sensitive planning", "Separation can create dispute risk—lawyer review is strongly recommended.");
+      }
+
+      // Minors & dependants
+      if (a.kids === "minor"){
+        add("Guardianship clause (minors)", "Names preferred guardian(s) if you die while children are minors.");
+        add("Trustee clause for minors’ gifts", "Minors usually can’t receive large gifts directly—trust mechanics are needed.");
+        add("Age/terms for distributions (e.g., 18/25/30)", "Lets you stage payments for maturity and stability.");
+      }
+      if (a.dependants === "yes"){
+        add("Dependants support awareness clause (planning note)", "If dependants aren’t supported, claims may arise—get legal advice.");
+      }
+
+      // Assets complexity
+      const assets = Array.isArray(a.assets) ? a.assets : [];
+      if (assets.includes("realestate")){
+        add("Real property direction (house/land)", "Clarifies intent where property is involved (and avoids misunderstandings).");
+      }
+      if (assets.includes("investments")){
+        add("Registered accounts review (beneficiary designations)", "Some accounts pass outside the will—designations should align with your plan.");
+      }
+      if (assets.includes("business")){
+        add("Business succession clause / powers", "Business interests often need tailored instructions and authority grants.");
+      }
+      if (assets.includes("foreign")){
+        add("Foreign assets planning flag", "Foreign property often needs local advice; consider a lawyer and/or separate will strategy.");
+      }
+
+      // Extras
+      if (a.specific === "yes"){
+        add("Specific bequests schedule", "Makes personal item gifting precise and reduces family conflict.");
+      }
+      if (a.pets === "yes"){
+        add("Pet care clause", "Names a caregiver and clarifies funding/intent for pet care.");
+      }
+      if (a.digital === "yes"){
+        add("Digital assets authority clause", "Gives the executor explicit authority for accounts/devices (subject to platform rules).");
+      }
+      if (a.charity === "yes"){
+        add("Charitable gift details (legal name/number)", "Ensures the gift goes to the intended organization cleanly.");
+      }
+
+      // Dispute risk
+      if (a.conflict === "yes" || a.conflict === "maybe" || a.blended === "yes"){
+        add("Reasons memo / letter of wishes (optional)", "Can reduce disputes by explaining choices (not always legally binding).");
+      }
+
+      // Deduplicate by title
+      const seen = new Set();
+      return clauses.filter(c => (seen.has(c.title) ? false : (seen.add(c.title), true)));
+    }
+
+    function renderLivePanel(){
+      wizardState.liveScore = scoreFromAnswers(wizardState.answers);
+      wizardState.liveTier = tierFromScore(wizardState.liveScore);
+      $("#liveScore").textContent = String(wizardState.liveScore);
+      $("#liveTier").textContent = wizardState.liveTier;
+
+      const tags = [];
+      for (const q of questions){
+        const v = wizardState.answers[q.id];
+        if (!v) continue;
+        const t = q.tags?.(v) || [];
+        tags.push(...t);
+      }
+      const uniqueTags = Array.from(new Set(tags)).slice(0, 10);
+      $("#liveTags").innerHTML = uniqueTags.length
+        ? uniqueTags.map(t => `<span class="tag"><b>•</b> ${escapeHTML(t)}</span>`).join("")
+        : `<div class="tiny">Answer questions to build your profile.</div>`;
+    }
+
+    function renderQuestion(){
+      const q = questions[wizardState.idx];
+      const total = questions.length;
+      $("#qKicker").textContent = `Question ${wizardState.idx + 1} of ${total}`;
+      $("#qTitle").textContent = q.title;
+
+      const pct = Math.round(((wizardState.idx) / total) * 100);
+      $("#qProgress").style.width = `${pct}%`;
+
+      const current = wizardState.answers[q.id];
+
+      const makeChoice = (value, label) => {
+        const isMulti = q.type === "multi";
+        const checked = isMulti
+          ? Array.isArray(current) && current.includes(value)
+          : current === value;
+
+        const inputType = isMulti ? "checkbox" : "radio";
+        const name = `q_${q.id}`;
+
+        return `
+          <label class="choice">
+            <input type="${inputType}" name="${escapeHTML(name)}" value="${escapeHTML(value)}" ${checked ? "checked" : ""} />
+            <span>${escapeHTML(label)}</span>
+          </label>
+        `;
+      };
+
+      $("#qChoices").innerHTML = q.options.map(([v,l]) => makeChoice(v,l)).join("");
+
+      const back = $("#qBack");
+      back.disabled = wizardState.idx === 0;
+
+      // Enable next even if unanswered, but use gentle validation for multi
+      $("#qNext").textContent = (wizardState.idx === total - 1) ? "Finish" : "Next";
+
+      $("#qChoices").querySelectorAll("input").forEach(inp => {
+        inp.addEventListener("change", () => {
+          if (q.type === "single"){
+            wizardState.answers[q.id] = inp.value;
+          } else {
+            const selected = Array.from($("#qChoices").querySelectorAll("input:checked")).map(x => x.value);
+            wizardState.answers[q.id] = selected.length ? selected : undefined;
+          }
+          renderLivePanel();
+        });
+      });
+
+      renderLivePanel();
+    }
+
+    function nextQuestion(){
+      const total = questions.length;
+      if (wizardState.idx >= total - 1){
+        showResults();
+        return;
+      }
+      wizardState.idx++;
+      renderQuestion();
+    }
+
+    function prevQuestion(){
+      wizardState.idx = clamp(wizardState.idx - 1, 0, questions.length - 1);
+      renderQuestion();
+    }
+
+    function skipQuestion(){
+      const q = questions[wizardState.idx];
+      delete wizardState.answers[q.id];
+      renderLivePanel();
+      nextQuestion();
+    }
+
+    function resetWillinator(){
+      wizardState.idx = 0;
+      wizardState.answers = {};
+      wizardState.liveScore = 0;
+      wizardState.liveTier = "Low";
+      $("#resultArea").style.display = "none";
+      $("#resultArea").innerHTML = "";
+      $("#qArea").style.display = "block";
+      renderQuestion();
+      renderLivePanel();
+    }
+
+    function showResults(){
+      const score = scoreFromAnswers(wizardState.answers);
+      const tier = tierFromScore(score);
+      const clauses = mustIncludeClauses(wizardState.answers);
+
+      const dotClass = tier === "High" ? "high" : tier === "Medium" ? "medium" : "";
+      const recommendation =
+        tier === "High"
+          ? "Recommended: lawyer review. Your situation flags higher complexity and dispute risk."
+          : tier === "Medium"
+            ? "Recommended: careful drafting + consider a lawyer check, especially for minors, separation, or assets."
+            : "Recommended: a basic will may be appropriate if execution is done properly; consider review if unsure.";
+
+      const nextSteps = tier === "High"
+        ? [
+            "Book a referral consult (LSRS) and bring this clause list.",
+            "If minors/dependants are involved, ask about trust structures and support claims.",
+            "If foreign assets exist, ask about jurisdiction-specific planning."
+          ]
+        : tier === "Medium"
+          ? [
+              "Use the Simulation to build a clean draft outline.",
+              "Avoid beneficiary witnesses; keep execution process tight.",
+              "If you’re separated or a blended family, treat that as a lawyer-review trigger."
+            ]
+          : [
+              "Draft clearly, name alternates, and keep the residue clause strong.",
+              "Store the original safely and tell your executor where it is.",
+              "Review after major life changes (kids, separation, major assets)."
+            ];
+
+      $("#qArea").style.display = "none";
+      $("#resultArea").style.display = "block";
+      $("#qProgress").style.width = "100%";
+
+      $("#resultArea").innerHTML = `
+        <div class="resultBox" role="region" aria-label="Risk profile results">
+          <div class="riskPill">
+            <span class="riskDot ${dotClass}" aria-hidden="true"></span>
+            <strong style="color:var(--navy);">Risk Profile:</strong>
+            <span>${escapeHTML(tier)} complexity</span>
+            <span class="tiny">• score ${score}/100</span>
+          </div>
+
+          <div class="small muted" style="margin-bottom:12px;">
+            ${escapeHTML(recommendation)}
+          </div>
+
+          <div class="grid grid-2">
+            <div class="card" style="box-shadow:none;">
+              <strong class="small">Must include clauses</strong>
+              <ul class="mustList">
+                ${clauses.map(c => `
+                  <li class="mustItem">
+                    <strong>${escapeHTML(c.title)}</strong>
+                    <p>${escapeHTML(c.why)}</p>
+                  </li>
+                `).join("")}
+              </ul>
+            </div>
+
+            <div class="card" style="box-shadow:none;">
+              <strong class="small">Next steps</strong>
+              <ol class="small muted" style="margin:10px 0 0; padding-left:18px;">
+                ${nextSteps.map(s => `<li>${escapeHTML(s)}</li>`).join("")}
+              </ol>
+
+              <div style="margin-top:14px;" class="card" aria-label="Actions" style="box-shadow:none;">
+                <strong class="small">Actions</strong>
+                <div class="qActions" style="margin-top:10px;">
+                  <button class="btn small primary" type="button" id="goSimulation">Open Simulation</button>
+                  <button class="btn small" type="button" id="printResults">Print</button>
+                  <button class="btn small ghost" type="button" id="backToQuestions">Edit Answers</button>
+                </div>
+                <div class="tiny" style="margin-top:8px;">
+                  For help: Legal Vault → “Where to Get Help”.
+                </div>
+              </div>
+
+              <div style="margin-top:12px;" class="tiny">
+                Note: This engine flags common needs; it does not replace Ontario legal advice.
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      $("#goSimulation").addEventListener("click", () => location.hash = "#simulation");
+      $("#printResults").addEventListener("click", () => window.print());
+      $("#backToQuestions").addEventListener("click", () => {
+        $("#resultArea").style.display = "none";
+        $("#qArea").style.display = "block";
+        // back to last question for convenience
+        wizardState.idx = clamp(questions.length - 1, 0, questions.length - 1);
+        renderQuestion();
+      });
+    }
+
+    $("#qNext").addEventListener("click", nextQuestion);
+    $("#qBack").addEventListener("click", prevQuestion);
+    $("#qSkip").addEventListener("click", skipQuestion);
+    $("#resetWillinator").addEventListener("click", resetWillinator);
+
+    /***********************
+     * Simulation (form + live preview)
+     ***********************/
+    const willState = {
+      testatorName: "",
+      testatorCity: "",
+      testatorAddress: "",
+      testatorDOB: "",
+      executorName: "",
+      executorAlt: "",
+      minorChildren: "unknown",
+      guardianName: "",
+      trusteeName: "",
+      beneficiaries: [], // {name, relationship, share}
+      specificGifts: "",
+      notes: ""
+    };
+
+    function makeBenefRow(item, idx){
+      const nameId = `b_name_${idx}`;
+      const relId  = `b_rel_${idx}`;
+      const shareId= `b_share_${idx}`;
+      return `
+        <div class="benefRow" data-bidx="${idx}">
+          <div>
+            <input type="text" id="${nameId}" placeholder="Beneficiary name" value="${escapeHTML(item.name||"")}" />
+          </div>
+          <div>
+            <input type="text" id="${relId}" placeholder="Relationship (optional)" value="${escapeHTML(item.relationship||"")}" />
+          </div>
+          <div>
+            <input type="text" id="${shareId}" placeholder="Share (e.g., 50% / equal)" value="${escapeHTML(item.share||"")}" />
+          </div>
+          <button class="pillBtn danger" type="button" aria-label="Remove beneficiary">Remove</button>
+        </div>
+      `;
+    }
+
+    function renderBeneficiaries(){
+      const wrap = $("#benefList");
+      if (!willState.beneficiaries.length){
+        wrap.innerHTML = `<div class="tiny">No beneficiaries added yet.</div>`;
+        return;
+      }
+      wrap.innerHTML = willState.beneficiaries.map((b,i)=>makeBenefRow(b,i)).join("");
+
+      $$("#benefList .benefRow").forEach(row=>{
+        const i = Number(row.dataset.bidx);
+        const inputs = row.querySelectorAll("input");
+        inputs[0].addEventListener("input", (e)=>{ willState.beneficiaries[i].name = e.target.value; renderWillDoc(); });
+        inputs[1].addEventListener("input", (e)=>{ willState.beneficiaries[i].relationship = e.target.value; renderWillDoc(); });
+        inputs[2].addEventListener("input", (e)=>{ willState.beneficiaries[i].share = e.target.value; renderWillDoc(); });
+        row.querySelector("button").addEventListener("click", ()=>{
+          willState.beneficiaries.splice(i,1);
+          renderBeneficiaries();
+          renderWillDoc();
+        });
+      });
+    }
+
+    function beneficiaryText(){
+      if (!willState.beneficiaries.length){
+        return `<em>[Beneficiary names and shares go here]</em>`;
+      }
+      const lines = willState.beneficiaries.map((b, idx) => {
+        const name = b.name?.trim() ? escapeHTML(b.name.trim()) : `<em>[Beneficiary ${idx+1}]</em>`;
+        const rel = b.relationship?.trim() ? ` (${escapeHTML(b.relationship.trim())})` : "";
+        const share = b.share?.trim() ? ` — <strong>${escapeHTML(b.share.trim())}</strong>` : ` — <strong>equal share</strong>`;
+        return `<li>${name}${rel}${share}</li>`;
+      });
+      return `<ol>${lines.join("")}</ol>`;
+    }
+
+    function minorsBlock(){
+      if (willState.minorChildren !== "yes") return "";
+      const g = willState.guardianName?.trim() ? escapeHTML(willState.guardianName.trim()) : "<em>[Guardian Name]</em>";
+      const t = willState.trusteeName?.trim() ? escapeHTML(willState.trusteeName.trim()) : "<em>[Trustee Name]</em>";
+      return `
+        <div class="section">
+          <strong>5. Minor Children (Guardian & Trustee)</strong><br/>
+          If at my death I have any child who is a minor, I nominate ${g} as guardian of that child,
+          and ${t} as trustee of any property held for that child, to manage and apply it for the child’s benefit.
+          <div class="tiny" style="margin-top:6px; color:var(--slate2);">
+            (This is a simplified educational clause. Real guardianship/trustee planning often needs legal advice.)
+          </div>
+        </div>
+      `;
+    }
+
+    function renderWillDoc(){
+      const tn = willState.testatorName?.trim() ? escapeHTML(willState.testatorName.trim()) : "<em>[Your Full Legal Name]</em>";
+      const city = willState.testatorCity?.trim() ? escapeHTML(willState.testatorCity.trim()) : "<em>[City/Town]</em>";
+      const addr = willState.testatorAddress?.trim() ? escapeHTML(willState.testatorAddress.trim()) : "<em>[Street Address]</em>";
+      const dob = willState.testatorDOB ? escapeHTML(willState.testatorDOB) : "<em>[Optional]</em>";
+      const ex = willState.executorName?.trim() ? escapeHTML(willState.executorName.trim()) : "<em>[Executor Name]</em>";
+      const alt = willState.executorAlt?.trim() ? escapeHTML(willState.executorAlt.trim()) : "<em>[Alternate Executor]</em>";
+      const gifts = willState.specificGifts?.trim() ? escapeHTML(willState.specificGifts.trim()).replaceAll("\n","<br/>") : "<em>[No specific gifts listed]</em>";
+      const notes = willState.notes?.trim() ? escapeHTML(willState.notes.trim()).replaceAll("\n","<br/>") : "<em>[None]</em>";
+
+      $("#willDoc").innerHTML = `
+        <h3>LAST WILL AND TESTAMENT</h3>
+        <div class="meta">
+          <div><strong>Testator:</strong> ${tn}</div>
+          <div><strong>Province:</strong> Ontario</div>
+          <div><strong>DOB:</strong> ${dob}</div>
+        </div>
+
+        <div class="section">
+          I, ${tn}, of ${addr}, ${city}, Ontario, declare this to be my Last Will and Testament. I revoke all previous wills and codicils made by me.
+        </div>
+
+        <div class="section">
+          <strong>1. Appointment of Executor (Estate Trustee)</strong><br/>
+          I appoint ${ex} as my Estate Trustee (executor). If they are unable or unwilling to act, I appoint ${alt} as alternate Estate Trustee.
+        </div>
+
+        <div class="section">
+          <strong>2. Debts, Taxes, and Expenses</strong><br/>
+          My Estate Trustee shall pay my just debts, funeral expenses, and testamentary expenses from my estate, as permitted by law.
+        </div>
+
+        <div class="section">
+          <strong>3. Specific Gifts (if any)</strong><br/>
+          ${gifts}
+        </div>
+
+        <div class="section">
+          <strong>4. Residuary Beneficiaries (Everything Else)</strong><br/>
+          I give the residue of my estate to the following beneficiaries:
+          ${beneficiaryText()}
+        </div>
+
+        ${minorsBlock()}
+
+        <div class="section">
+          <strong>6. General Powers</strong><br/>
+          My Estate Trustee may do all things necessary to administer my estate, including collecting assets, paying liabilities, and distributing property in accordance with this Will and Ontario law.
+        </div>
+
+        <div class="section">
+          <strong>7. Additional Instructions (optional)</strong><br/>
+          ${notes}
+        </div>
+
+        <div class="section" style="margin-top:14px;">
+          <strong>EXECUTION</strong><br/>
+          Signed by me in the presence of two witnesses who were present at the same time, who each signed in my presence.
+        </div>
+
+        <div class="sig">
+          <div class="sigBox">
+            <div class="sigLine"><strong>Testator signature</strong></div>
+            Date: ______________________
+          </div>
+          <div class="sigBox">
+            <div class="sigLine"><strong>Testator printed name</strong></div>
+            ${tn}
+          </div>
+
+          <div class="sigBox">
+            <div class="sigLine"><strong>Witness #1 signature</strong></div>
+            Printed name & address: ______________________
+          </div>
+          <div class="sigBox">
+            <div class="sigLine"><strong>Witness #2 signature</strong></div>
+            Printed name & address: ______________________
+          </div>
+        </div>
+      `;
+    }
+
+    function bindWillInputs(){
+      const map = [
+        ["testatorName","testatorName"],
+        ["testatorCity","testatorCity"],
+        ["testatorAddress","testatorAddress"],
+        ["testatorDOB","testatorDOB"],
+        ["executorName","executorName"],
+        ["executorAlt","executorAlt"],
+        ["specificGifts","specificGifts"],
+        ["notes","notes"]
+      ];
+      for (const [id,key] of map){
+        const el = $("#"+id);
+        el.addEventListener("input", () => { willState[key] = el.value; renderWillDoc(); });
+        el.addEventListener("change", () => { willState[key] = el.value; renderWillDoc(); });
+      }
+
+      $("#minorChildren").addEventListener("change", (e)=>{
+        willState.minorChildren = e.target.value;
+        $("#guardianBlock").style.display = (willState.minorChildren === "yes") ? "block" : "none";
+        renderWillDoc();
+      });
+      $("#guardianName").addEventListener("input", (e)=>{ willState.guardianName = e.target.value; renderWillDoc(); });
+      $("#trusteeName").addEventListener("input", (e)=>{ willState.trusteeName = e.target.value; renderWillDoc(); });
+
+      $("#addBenef").addEventListener("click", ()=>{
+        willState.beneficiaries.push({name:"", relationship:"", share:""});
+        renderBeneficiaries();
+        renderWillDoc();
+      });
+
+      $("#printWill").addEventListener("click", ()=> window.print());
+      $("#resetWillForm").addEventListener("click", ()=>{
+        // reset willState
+        Object.assign(willState, {
+          testatorName:"", testatorCity:"", testatorAddress:"", testatorDOB:"",
+          executorName:"", executorAlt:"",
+          minorChildren:"unknown", guardianName:"", trusteeName:"",
+          beneficiaries:[], specificGifts:"", notes:""
+        });
+        // reset UI
+        $("#testatorName").value = "";
+        $("#testatorCity").value = "";
+        $("#testatorAddress").value = "";
+        $("#testatorDOB").value = "";
+        $("#executorName").value = "";
+        $("#executorAlt").value = "";
+        $("#minorChildren").value = "unknown";
+        $("#guardianName").value = "";
+        $("#trusteeName").value = "";
+        $("#guardianBlock").style.display = "none";
+        $("#specificGifts").value = "";
+        $("#notes").value = "";
+        renderBeneficiaries();
+        renderWillDoc();
+      });
+
+      // Seed 1 row for better UX
+      willState.beneficiaries.push({name:"", relationship:"", share:"equal"});
+      renderBeneficiaries();
+      renderWillDoc();
+    }
+
+    /***********************
+     * Glossary
+     ***********************/
+    const glossary = [
+      { term:"Executor (Estate Trustee)", def:"The person you appoint to carry out your will: gather assets, pay debts/taxes, and distribute property." },
+      { term:"Beneficiary", def:"A person or organization that receives a gift from your will." },
+      { term:"Residuary Estate (Residue)", def:"Everything left after debts, taxes, and specific gifts are handled. Most wills rely on a strong residue clause." },
+      { term:"Specific Bequest", def:"A particular item (or defined sum) given to a named beneficiary (e.g., ‘my watch collection to…’)." },
+      { term:"Codicil", def:"A signed amendment to a will. Many people instead make a new will to reduce confusion, depending on the change." },
+      { term:"Witness", def:"A person who watches you sign a formal will and signs to confirm that process. Neutral witnesses reduce dispute risk." },
+      { term:"Holograph Will", def:"A will that is entirely handwritten and signed by the will-maker. Rules differ from formal wills." },
+      { term:"Guardian", def:"A person nominated to care for minor children if the parents die. Guardianship can be complex; legal advice is common." },
+      { term:"Trustee (for minors)", def:"A person who manages funds/property on behalf of a minor beneficiary until they reach the distribution age." },
+      { term:"Probate", def:"A court process that confirms the will and authorizes the estate trustee, often required for certain assets." },
+      { term:"Undue Influence", def:"Improper pressure that overbears someone’s free will. It can lead to challenges and litigation." },
+      { term:"Intestacy", def:"Dying without a valid will. Ontario’s default rules determine who inherits and who administers the estate." },
+      { term:"Power of Attorney", def:"A separate document for decision-making while alive (property or personal care). Not the same as a will." }
+    ];
+
+    function renderGlossary(filter=""){
+      const q = filter.trim().toLowerCase();
+      const items = glossary.filter(x => !q || x.term.toLowerCase().includes(q) || x.def.toLowerCase().includes(q));
+      $("#glossaryList").innerHTML = items.map((x,i)=>`
+        <details ${q && items.length <= 6 ? "open" : ""}>
+          <summary>${escapeHTML(x.term)} <span class="tiny">+</span></summary>
+          <p>${escapeHTML(x.def)}</p>
+        </details>
+      `).join("") || `<div class="tiny" style="padding:12px;">No matches. Try “executor”, “residue”, “probate”.</div>`;
+    }
+
+    $("#glossarySearch").addEventListener("input", (e)=>renderGlossary(e.target.value));
+    $("#glossaryList").addEventListener("keydown", (e)=>{
+      if (e.key === "Escape"){
+        $$("#glossaryList details[open]").forEach(d=>d.removeAttribute("open"));
+      }
+    });
+
+    /***********************
+     * Home page print
+     ***********************/
+    $("#printChecklist").addEventListener("click", ()=> window.print());
+
+    /***********************
+     * Init
+     ***********************/
+    $("#year").textContent = String(new Date().getFullYear());
+    setActiveRoute(getRouteFromHash());
+
+    // Walkthrough default detail
+    renderStepDetail(0);
+
+    // Will-I-Nator
+    renderQuestion();
+    renderLivePanel();
+
+    // Simulation
+    bindWillInputs();
+
+    // Glossary
+    renderGlossary();
+  </script>
+</body>
+</html>
