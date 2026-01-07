@@ -465,7 +465,7 @@
     }
     .chip svg{ opacity:.8; }
 
-    /* Will-I-Nator */
+    /* Will Risk Assesment */
     .wizard{
       display:grid;
       grid-template-columns: 1fr .9fr;
@@ -795,7 +795,7 @@
         <nav class="navlinks" aria-label="Pages">
           <a href="#home" data-link>Home</a>
           <a href="#walkthrough" data-link>Walkthrough</a>
-          <a href="#willinator" data-link>Will-I-Nator</a>
+          <a href="#willinator" data-link>Will Risk Assesment</a>
           <a href="#simulation" data-link>Simulation</a>
           <a href="#vault" data-link>Legal Vault</a>
         </nav>
@@ -808,7 +808,7 @@
           <button class="btn small ghost mobileToggle" id="openDrawer" aria-haspopup="dialog" aria-controls="drawer" aria-label="Open menu">
             Menu
           </button>
-          <button class="btn small primary" data-route-btn="#willinator" aria-label="Start the Will-I-Nator">
+          <button class="btn small primary" data-route-btn="#willinator" aria-label="Start the Will Risk Assesment">
             Start Now
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M9 18l6-6-6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -829,7 +829,7 @@
     <div class="links" role="navigation" aria-label="Mobile pages">
       <a href="#home" data-link>Home</a>
       <a href="#walkthrough" data-link>Walkthrough</a>
-      <a href="#willinator" data-link>Will-I-Nator</a>
+      <a href="#willinator" data-link>Will Risk Assesment</a>
       <a href="#simulation" data-link>Simulation</a>
       <a href="#vault" data-link>Legal Vault</a>
     </div>
@@ -852,8 +852,7 @@
               </div>
               <h1 id="home-title">Secure your future with an Ontario-ready will plan.</h1>
               <p class="lead">
-                Learn the legal stages, run a risk check, and build a draft preview—so you walk into a lawyer meeting (or a DIY attempt) with clarity.
-                No accounts. No tracking. Just clean, high-signal tools.
+                Learn the legal stages, run a risk check, and build a draft preview—so you walk into a lawyer meeting with clarity.
               </p>
               <div class="heroActions">
                 <button class="btn primary" data-route-btn="#walkthrough">
@@ -863,7 +862,7 @@
                   </svg>
                 </button>
                 <button class="btn" data-route-btn="#willinator">
-                  Run Will-I-Nator
+                  Run Will Risk Assesment
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M12 6v12M6 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                   </svg>
@@ -1056,7 +1055,7 @@
           <h2 id="walkthrough-title">The Walkthrough</h2>
           <p>Five Ontario-relevant stages, presented as a clean stepper with practical “watch-outs”.</p>
         </div>
-        <button class="btn small" data-route-btn="#willinator">Run Will-I-Nator</button>
+        <button class="btn small" data-route-btn="#willinator">Run Will Risk Assesment</button>
       </div>
 
       <div class="stepperWrap">
@@ -1132,11 +1131,11 @@
       </footer>
     </section>
 
-    <!-- ROUTE: WILL-I-NATOR -->
+    <!-- ROUTE: Will Risk Assesment -->
     <section class="route" id="route-willinator" data-route="willinator" aria-labelledby="willinator-title">
       <div class="sectionTitle">
         <div>
-          <h2 id="willinator-title">The Will-I-Nator</h2>
+          <h2 id="willinator-title">Will Risk Assesment</h2>
           <p>Answer a few questions. Get a risk profile and a list of clauses you <em>must</em> consider for an Ontario will.</p>
         </div>
         <button class="btn small ghost" id="resetWillinator">Reset</button>
@@ -1195,7 +1194,7 @@
       <div id="resultArea" style="margin-top:18px; display:none;"></div>
 
       <footer>
-        Pro move: run Will-I-Nator first, then do the <a href="#simulation" data-link style="color:var(--blue2); text-decoration:underline;">Simulation</a> to see how clauses appear in a document layout.
+        Pro move: run Will Risk Assesment first, then do the <a href="#simulation" data-link style="color:var(--blue2); text-decoration:underline;">Simulation</a> to see how clauses appear in a document layout.
       </footer>
     </section>
 
@@ -1742,7 +1741,7 @@
     });
 
     /***********************
-     * Will-I-Nator (Wizard)
+     *Will Risk Assesment (Wizard)
      ***********************/
     const questions = [
       { id:"marital", type:"single", title:"What’s your relationship status (for estate planning)?",
@@ -2412,7 +2411,7 @@
     // Walkthrough default detail
     renderStepDetail(0);
 
-    // Will-I-Nator
+    // Will Risk Assesment
     renderQuestion();
     renderLivePanel();
 
