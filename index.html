@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>The Ontario Will Clinic</title>
-  <meta name="description" content="The Ontario Will Clinic — educational tools to understand Ontario wills: walkthrough, deciion engine, and an interactive will preview (not legal advice)." />
+  <meta name="description" content="The Ontario Will Clinic — educational tools to understand Ontario wills: walkthrough, decision engine, and an interactive will preview (not legal advice)." />
   <meta name="theme-color" content="#0F172A" />
 
   <!-- Inter font -->
@@ -1133,7 +1133,7 @@
     </section>
 
     <!-- ROUTE: WILL-I-NATOR -->
-    <section class="route" id="route-willator" data-route="willinator" aria-labelledby="willinator-title">
+    <section class="route" id="route-willinator" data-route="willinator" aria-labelledby="willinator-title">
       <div class="sectionTitle">
         <div>
           <h2 id="willinator-title">The Will-I-Nator</h2>
@@ -1372,6 +1372,21 @@
               </a>
             </div>
 
+            <!-- NEW: Certificate Without a Will (best-effort link pattern consistent with other courtforms static URLs) -->
+            <div class="resourceCard">
+              <a href="https://ontariocourtforms.on.ca/static/media/uploads/courtforms/civil/74_14/rcp-74-14-e.pdf" target="_blank" rel="noreferrer">
+                <div>
+                  <div class="rTitle">Form 74.14 — Application for a Certificate of Appointment of Estate Trustee (Without a Will) (PDF)</div>
+                  <div class="rMeta">Probate application when there is no will (Court Forms)</div>
+                </div>
+                <div class="arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+
             <div class="resourceCard">
               <a href="https://ontariocourtforms.on.ca/static/media/uploads/courtforms/civil/filing-service-timelines-rcp-74a-74-1a-74j-en.pdf" target="_blank" rel="noreferrer">
                 <div>
@@ -1385,6 +1400,22 @@
                 </div>
               </a>
             </div>
+
+            <!-- NEW: SLRA -->
+            <div class="resourceCard">
+              <a href="https://www.ontario.ca/laws/statute/90s26" target="_blank" rel="noreferrer">
+                <div>
+                  <div class="rTitle">Succession Law Reform Act (SLRA) — Ontario statute</div>
+                  <div class="rMeta">Official Ontario e-Laws / Ontario.ca legislation page</div>
+                </div>
+                <div class="arrow" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+            </div>
+
           </div>
         </div>
 
@@ -1530,11 +1561,19 @@
     }
     function setActiveRoute(route){
       $$(".route").forEach(s => s.dataset.active = (s.dataset.route === route) ? "true" : "false");
-      // nav highlight
+
+      // nav highlight (ARIA-correct)
       $$("[data-link]").forEach(a => {
         const href = (a.getAttribute("href") || "").replace("#","");
-        if (routes.includes(href)) a.setAttribute("aria-current", href === route ? "page" : "false");
+        if (!routes.includes(href)) return;
+
+        if (href === route) {
+          a.setAttribute("aria-current", "page");
+        } else {
+          a.removeAttribute("aria-current");
+        }
       });
+
       // focus main for accessibility on route change
       $("#main").focus({preventScroll:true});
       // close mobile drawer if open
@@ -1919,7 +1958,8 @@
       $("#qKicker").textContent = `Question ${wizardState.idx + 1} of ${total}`;
       $("#qTitle").textContent = q.title;
 
-      const pct = Math.round(((wizardState.idx) / total) * 100);
+      // FIX: start at 10% on Q1 instead of 0%
+      const pct = Math.round(((wizardState.idx + 1) / total) * 100);
       $("#qProgress").style.width = `${pct}%`;
 
       const current = wizardState.answers[q.id];
